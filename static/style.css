@@ -1,0 +1,147 @@
+body, p, tr, td, tr, div, code, em, b, i, strong {
+	font-family: Trebuchet MS,Verdana,Arial,Lucida,Helvetica,sans-serif;
+	font-size: 10pt;
+}
+
+body {
+/*	background-color: #006644; */
+/*	background-color: #880022; */
+	background-color: white;
+}
+
+div.page {
+	margin-left: 8em;
+	width: 512px;
+/*	background-color: #ddffdd; */
+	background-color: white;
+	padding: 1em;
+	border-left: dotted black 1px;
+	border-right: dotted black 1px;
+}
+
+div.pathinfo {
+	text-align: center;
+	font-style: italic;
+	background-color: #ddffdd;
+	padding: 0.1em;
+}
+
+div.sidebar {
+	float: left;
+	padding: 0;
+	margin: 0px;
+	margin-top: 36pt;
+	width: 7em;
+	text-align: right;
+}
+
+div.footer {
+	text-align: right;
+	font-size: x-small;
+	font-style: italic;
+}
+
+.blockquote {
+	margin-left: 2em;
+/*	color: #880000; */
+	color: #008800;
+}
+
+H1,H2,H3,H4,H5,H6 {
+	margin: 0pt;
+}
+
+img.rightfloat {
+	float: right;
+	margin-left: 1em;
+}
+
+H1 {
+	font-size: 24pt;
+	text-align: center;
+/*	background-color: #ffffcc; */
+/*	background-color: #ccccff; */
+	background-color: #ccffcc;
+	padding-bottom: 0.1em;
+	border-bottom: dotted black 1px;
+/*	margin-bottom: 1em; */
+}
+
+span.peripheral {
+	font-size: 75%;
+/*	color: #aa3311; */
+	color: #11aa33;
+}
+
+span.tla-version {
+	font-size: 66%;
+	padding-left: 1em;
+	color: gray;
+}
+
+H2 {
+	font-size: 16pt;
+}
+
+H3 { 
+	font-size: 14pt; 
+	margin-bottom: 0.5em;
+	margin-top: 1.5em;
+/*	font-style: italic; */
+}
+
+H3.dateline {
+	font-style: italic;
+	text-align: right;
+	color: gray;
+}
+
+.nogap {
+	margin: 0pt;
+}
+
+H4 {
+	font-size: 12pt;
+	margin-top: 1.5em;
+}
+
+H5 {
+	font-size: 10pt;
+	margin-top: 1em;
+}
+
+H6 {
+	font-size: 10pt;
+}
+
+A {
+/*	color: #ff0000; */
+	color: #00ff00;
+	text-decoration: none;
+	border-bottom: dotted 1px;
+	font-weight: bold;
+}
+
+A:visited {
+/*	color: #880000; */
+	color: #008800;
+}
+
+DIV.quote {
+	color: #11aa33;
+	background-color: #ddffdd;
+	font-size: xx-small;
+	text-align: center;
+	font-style: italic;
+	padding: 0.1em;
+	border-bottom: dotted black 1px;
+}
+
+HR {
+	border: none;
+	border-top: solid black 2px;
+}
+
+div.sitemap_subcategory {
+	margin-left: 2em;
+}

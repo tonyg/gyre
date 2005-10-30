@@ -1,0 +1,62 @@
+--------------------------------------------------------------------------------
+    GYRE - A Weblog program, similar to Blosxom, written in Python
+    Copyright (C) 2004  Tony Garnock-Jones <tonyg@kcbbs.gen.nz>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+--------------------------------------------------------------------------------
+
+0. Contents:
+
+This program is free software, covered by the GNU GPL. "Share and
+enjoy!"  Please see the file "COPYING" in this directory for
+details. This program is copyright 2004 to Tony Garnock-Jones
+<tonyg@kcbbs.gen.nz>.
+
+This software was inspired by Rael Dornfest's Blosxom software, which
+is available at http://www.blosxom.com/.
+
+1. Installation
+2. Configuration
+3. Writing articles
+4. Contributing changes back
+
+--------------------------------------------------------------------------------
+
+1. Installation
+
+You will need:
+	* a working webserver (Apache works for me...)
+	* a working python system, version 2.3 or better, with
+	  the default set of libraries, including cgi.py and rfc822.py
+	  among others
+
+2. Configuration
+
+This section will go through the variables and files involved in
+configuring Gyre.
+
+3. Writing articles
+
+4. Contributing changes back
+
+If you modify this program so it does something funky, new, and/or
+exciting, I'd really like to hear about it. If I ever release another
+version, your new feature could well become part of it :-)
+
+You can contact me at the email address given at the top of this
+message. I hope you enjoy this program.
+
+	- Tony Garnock-Jones
+	  August 2004

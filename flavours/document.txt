@@ -1,0 +1,3 @@
+                    <?config.blog_title?>
+
+<?contents?>
