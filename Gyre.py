@@ -21,6 +21,7 @@ import sys
 import os
 import string
 import rfc822
+import time
 import re
 import traceback
 import cgi
@@ -267,6 +268,11 @@ def renderStories(query, url):
             return sb.mtime - sa.mtime
     docenvt.stories.sort(cmp_story)
     docenvt.story_count = len(docenvt.stories)
+    if docenvt.stories:
+        docenvt.mtime = docenvt.stories[0].mtime
+    else:
+        docenvt.mtime = 0
+    docenvt.mtime3339 = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(docenvt.mtime))
     for filter in config.store.getPlugins('filterQueryStories'): filter(query, docenvt.stories)
 
     content_entries = []

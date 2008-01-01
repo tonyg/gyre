@@ -1,0 +1,10 @@
+<?'<?xml version="1.0"?'+'>'?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom">
+  <atom:title type="text"><?config.blog_title?></atom:title>
+  <atom:updated><?mtime3339?></atom:updated>
+  <atom:generator version="<?config.version?>">gyre/<?config.version?></atom:generator>
+  <atom:id><?url?></atom:id> <!-- cheating. Get a better ID -->
+  <atom:link rel="self" href="<?url?>" />
+
+  <?contents?>
+</atom:feed>

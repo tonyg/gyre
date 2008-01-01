@@ -1,0 +1,12 @@
+  <atom:entry xmlns:atom="http://www.w3.org/2005/Atom">
+    <atom:title type="html"><?cgi.escape(story.subject)?></atom:title>
+    <atom:updated><?story.mtime3339?></atom:updated>
+    <atom:author>
+      <atom:name><?getattr(story,'from')?></atom:name>
+    </atom:author>
+    <atom:category term="<?story.display.category?>" />
+    <atom:id><?url?>/_STORY_/<?story.id?>.html</atom:id> <!-- cheating. Get a better ID -->
+    <atom:link href="<?url?>/_STORY_/<?story.id?>.html" />
+
+    <atom:content type="html"><?cgi.escape(story.body)?></atom:content>
+  </atom:entry>
