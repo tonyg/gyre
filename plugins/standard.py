@@ -15,6 +15,7 @@ def prerender_story(query, docentity, story, storyenvt):
     # Allow mtime to be formatted in the template.
     story.mtimefmt = lambda fmt: time.strftime(fmt, time.localtime(story.mtime))
     story.mtimefmt_utc = lambda fmt: time.strftime(fmt, time.gmtime(story.mtime))
+    story.mtime3339 = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(story.mtime))
     return []
 
 def prerender_document(query, docenvt):
