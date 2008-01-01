@@ -222,7 +222,7 @@ config.file_extension = 'txt'
 config.default_flavour = 'html'
 config.store = Store()
 config.sources = []
-config.snapshot_flavours = ['html', 'rss']
+config.snapshot_flavours = ['html', 'rss', 'atom']
 config.verbose_snapshot = 1
 config.base_url = os.path.dirname(os.environ.get('SCRIPT_NAME', '/'))
 
