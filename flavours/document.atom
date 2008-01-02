@@ -5,6 +5,7 @@
   <atom:generator version="<?config.version?>">gyre/<?config.version?></atom:generator>
   <atom:id><?url?></atom:id> <!-- cheating. Get a better ID -->
   <atom:link rel="self" href="<?skip_url(query.skip)?>" />
+  <atom:link rel="first" href="<?skip_url('0')?>" />
   <?prev_skip and ('<atom:link rel="previous" href="'+skip_url(prev_skip)+'" />')?>
   <?next_skip and ('<atom:link rel="next" href="'+skip_url(next_skip)+'" />')?>
 
