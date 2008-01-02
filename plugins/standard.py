@@ -27,8 +27,12 @@ def prerender_document(query, docenvt):
             else:
                 return os.path.join(*([docenvt.url] + query.category + ['index.' + query.flavour]))
         elif query.mode == 'script':
+            if skip and int(skip):
+                skip_extension = '?skip=' + skip
+            else:
+                skip_extension = ''
             return os.path.join(*([docenvt.url] + query.category +
-                                  ['index.' + query.flavour + '?skip=' + skip]))
+                                  ['index.' + query.flavour + skip_extension]))
         else:
             return ''
             
