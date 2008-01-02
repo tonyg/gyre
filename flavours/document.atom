@@ -5,7 +5,7 @@
   <atom:generator version="<?config.version?>">gyre/<?config.version?></atom:generator>
   <atom:id><?url?></atom:id> <!-- cheating. Get a better ID -->
   <atom:link rel="self" href="<?config.script_url?>/<?'/'.join(query.category)?>/index.atom" />
-  <?prev_skip and ('<atom:link rel="prev" href="'+skip_url(prev_skip)+'" />')?>
+  <?prev_skip and ('<atom:link rel="previous" href="'+skip_url(prev_skip)+'" />')?>
   <?next_skip and ('<atom:link rel="next" href="'+skip_url(next_skip)+'" />')?>
 
   <?contents?>
