@@ -1,6 +1,7 @@
 Subject: About Gyre
-Time-stamp: <2004-07-25 21:01:30 tonyg>
+Time-stamp: <2009-09-11 14:53:20 tonyg>
+...
 
-Gyre is a simple weblog publishing program, similar to <a
-href="http://www.blosxom.com/">Blosxom</a>, written in <a
-href="http://www.python.org/">Python</a>.
+Gyre is a simple weblog publishing program, similar to
+[Blosxom](http://www.blosxom.com/), written in
+[Python](http://www.python.org/).
