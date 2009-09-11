@@ -60,6 +60,24 @@ class ExtendedMarkdown(markdown2.Markdown):
 class YamlFSSource:
     def __init__(self, contentdir):
         self.contentdir = contentdir
+        self.template_headers_cache = {}
+
+    def _load_file(self, filepath):
+        f = open(filepath)
+        loader = yaml.Loader(f)
+        headers = loader.get_data()
+        body = loader.prefix(1000000000).strip('\0').strip() # yuck
+        f.close()
+        return (headers, body)
+
+    def _template_headers(self, dirname):
+        if dirname not in self.template_headers_cache:
+            filepath = os.path.join(dirname, '__template__')
+            try:
+                self.template_headers_cache[dirname] = self._load_file(filepath)[0]
+            except IOError:
+                self.template_headers_cache[dirname] = {}
+        return self.template_headers_cache[dirname]
 
     def _visit_story(self, query, dirname, name):
         filepath = os.path.join(dirname, name + '.' + Gyre.config.file_extension)
@@ -71,13 +89,10 @@ class YamlFSSource:
         story = Gyre.Entity()
         story.mtime = s.st_mtime
 
-        f = open(filepath)
-        loader = yaml.Loader(f)
-        headers = loader.get_data()
+        (headers, body) = self._load_file(filepath)
+        for (key, val) in self._template_headers(dirname).items(): setattr(story, key.lower(), val)
         for (key, val) in headers.items(): setattr(story, key.lower(), val)
-        body = loader.prefix(1000000000).strip('\0').strip() # yuck
         body = ExtendedMarkdown(query.mode).convert(body)
-        f.close()
 
         story.mtime = int(story.mtime)
         categorystr = dirname[len(self.contentdir) + 1:]
