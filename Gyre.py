@@ -198,7 +198,7 @@ def template(tmpl, env):
             break
         acc.append(tmpl[:m.start()])
         try:
-            acc.append(str(eval(m.group(1), sys.modules, env)))
+            acc.append(unicode(eval(m.group(1), sys.modules, env)))
         except:
             acc.append(cgi.escape('<Exception:\r\n' +
                                   string.join(traceback.format_exception(*sys.exc_info()), '') +
@@ -320,5 +320,5 @@ def cgi_main():
     (headers, document) = renderStories(query, config.script_url)
     sys.stdout.write(headers)
     sys.stdout.write('\r\n')
-    sys.stdout.write(document)
+    sys.stdout.write(document.encode('utf-8'))
     config.store.save()
