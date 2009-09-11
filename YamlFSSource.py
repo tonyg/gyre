@@ -49,7 +49,8 @@ class ExtendedMarkdown(markdown2.Markdown):
         replacements.reverse()
         for (start, end), href, label in replacements:
             href = escape_md(href)
-            if label is None: label = href
+            if label is None:
+                label = os.path.basename(href)
             escaped_href = href.replace('"', '&quot;')  # b/c of attr quote
             text = text[:start] + \
                    ('<a href="%s.html">%s</a>' % \
