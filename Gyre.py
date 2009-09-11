@@ -272,7 +272,7 @@ def snapshotRender(query):
     if config.verbose_snapshot:
         print 'Writing %s...' % path
     f = open(path, 'w', 0644)
-    f.write(document)
+    f.write(document.encode('utf-8'))
     f.close()
 
 def snapshot_main():
