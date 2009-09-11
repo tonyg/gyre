@@ -20,7 +20,6 @@
 import sys
 import os
 import string
-import rfc822
 import time
 import re
 import traceback
@@ -169,50 +168,6 @@ class Store:
         acc.extend(stories)
         self.accumulate_tree(acc, idx)
         return acc
-
-class FSSource:
-    def __init__(self, contentdir):
-        self.contentdir = contentdir
-
-    def _visit_story(self, query, dirname, name):
-        filepath = os.path.join(dirname, name + '.' + config.file_extension)
-        try:
-            s = os.stat(filepath)
-        except OSError:
-            return
-
-        story = Entity()
-        story.mtime = s.st_mtime
-
-        f = open(filepath)
-        headers = rfc822.Message(f)
-        for (key, val) in headers.items(): setattr(story, key.lower(), val)
-        body = f.read()
-        f.close()
-
-        story.mtime = int(story.mtime)
-        categorystr = dirname[len(self.contentdir) + 1:]
-        if categorystr:
-            story.category = string.split(categorystr, '/')
-        else:
-            story.category = []
-        story.body = body
-
-        uid = list(story.category)
-        uid.append(name)
-        story.id = string.join(uid, '/')
-
-        config.store.update(story)
-
-    def _visit(self, query, dirname, names):
-        for name in names:
-            if name.endswith('.' + config.file_extension):
-                choplen = len(config.file_extension) + 1
-                self._visit_story(query, dirname, name[:-choplen])
-
-    def updateForQuery(self, query):
-        category = os.path.join(self.contentdir, *query.category)
-        os.path.walk(category, self._visit, query)
 
 config = Entity()
 config.version = '0.0.1'

@@ -10,7 +10,8 @@ config.snapshot_url = ''
 config.snapshot_dir = 'snapshot'
 config.num_entries = 10
 
-add_source(FSSource('content'))
+import OldFSSource
+add_source(OldFSSource.OldFSSource('content'))
 
 # import TlaSource
 # add_source(TlaSource.TlaSource('/usr/local/bin/tla', ['changelog']))
