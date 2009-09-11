@@ -89,6 +89,7 @@ class YamlFSSource:
 
         story = Gyre.Entity()
         story.mtime = s.st_mtime
+        story.renderer = 'renderstory'
 
         (headers, body) = self._load_file(filepath)
         for (key, val) in self._template_headers(dirname).items(): setattr(story, key.lower(), val)
