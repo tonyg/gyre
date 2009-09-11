@@ -179,7 +179,10 @@ config.store = Store()
 config.sources = []
 config.snapshot_flavours = ['html', 'rss', 'atom']
 config.verbose_snapshot = 1
-config.base_url = os.path.dirname(os.environ.get('SCRIPT_NAME', '/'))
+if os.environ.has_key('SCRIPT_NAME'):
+    config.base_url = os.path.dirname(os.environ['SCRIPT_NAME'])
+else:
+    config.base_url = 'file://' + os.getcwd()
 
 def add_source(source):
     config.sources.append(source)
@@ -273,7 +276,7 @@ def snapshotRender(query):
     f.close()
 
 def snapshot_main():
-    top_query = query_for(category = [])
+    top_query = query_for(category = [], mode = 'snapshot')
     config.store.load()
     config.store.prepareForQuery(top_query)
     for source in config.sources: source.updateForQuery(top_query)
