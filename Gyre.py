@@ -23,6 +23,7 @@ import string
 import time
 import re
 import traceback
+import yaml
 import cgi
 import cgitb; cgitb.enable()
 
@@ -342,7 +343,8 @@ def cgi_main():
             else:
                 query.storyid = string.join(category, '/')
 
-    for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items(): setattr(query, k, v[0])
+    for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
+        setattr(query, k, yaml.load(v[0]))
     config.store.load()
     config.store.prepareForQuery(query)
     for source in config.sources: source.updateForQuery(query)
