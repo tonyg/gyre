@@ -190,6 +190,9 @@ if os.environ.has_key('SCRIPT_NAME'):
 else:
     config.base_url = 'file://' + os.getcwd()
 
+config.protostory = Entity()
+config.protostory.renderers = ['renderstory', 'markdown']
+
 def add_source(source):
     config.sources.append(source)
 

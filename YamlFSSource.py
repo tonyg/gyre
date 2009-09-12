@@ -35,13 +35,26 @@ class YamlFSSource:
         f.close()
         return (headers, body)
 
-    def _template_headers(self, dirname):
+    def _canonical_dirname(self, dirname):
+        if dirname.startswith(self.contentdir):
+            dirname = dirname[len(self.contentdir):]
+        if dirname and dirname[0] == '/':
+            dirname = dirname[1:]
+        return dirname
+
+    def _template_headers(self, uncanonicalized_dirname):
+        dirname = self._canonical_dirname(uncanonicalized_dirname)
         if dirname not in self.template_headers_cache:
-            filepath = os.path.join(dirname, '__template__')
+            filepath = os.path.join(uncanonicalized_dirname, '__template__')
+            if dirname:
+                parent = self._template_headers(os.path.dirname(uncanonicalized_dirname))
+            else:
+                parent = Gyre.config.protostory
             try:
-                self.template_headers_cache[dirname] = self._load_file(filepath)[0]
+                p = self._load_file(filepath)[0]
             except IOError:
-                self.template_headers_cache[dirname] = {}
+                p = {}
+            self.template_headers_cache[dirname] = Gyre.Entity(parent = parent, defaultprops = p)
         return self.template_headers_cache[dirname]
 
     def _visit_story(self, query, dirname, name):
@@ -51,12 +64,10 @@ class YamlFSSource:
         except OSError:
             return
 
-        story = Gyre.Entity()
+        story = Gyre.Entity(self._template_headers(dirname))
         story.mtime = s.st_mtime
-        story.renderers = ['renderstory', 'markdown']
 
         (headers, body) = self._load_file(filepath)
-        for (key, val) in self._template_headers(dirname).items(): setattr(story, key.lower(), val)
         for (key, val) in headers.items(): setattr(story, key.lower(), val)
 
         story.mtime = int(story.mtime)
