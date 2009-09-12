@@ -78,9 +78,10 @@ class YamlFSSource:
             story.category = []
         story.body = body
 
-        uid = list(story.category)
-        uid.append(name)
-        story.id = string.join(uid, '/')
+        if not story.id:
+            uid = list(story.category)
+            uid.append(name)
+            story.id = string.join(uid, '/')
 
         Gyre.config.store.update(story)
 
