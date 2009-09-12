@@ -35,9 +35,9 @@ def maybe_wrap_dict(x):
         return x
 
 class Entity:
-    def __init__(self, parent=None, defaultprops={}):
+    def __init__(self, parent=None, defaultprops=None):
         self.__dict__['_parent'] = parent
-        self.__dict__['_props'] = dict(defaultprops)
+        self.__dict__['_props'] = defaultprops or {}
     def __getattr__(self, name):
         if name.startswith('_'): raise AttributeError, name
         if self._props.has_key(name): return maybe_wrap_dict(self._props[name])
