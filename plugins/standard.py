@@ -36,9 +36,9 @@ def prerender_document(query, docenvt):
         else:
             return ''
             
+    next_skip = ''
+    prev_skip = ''
     if query.num_entries:
-        next_skip = ''
-        prev_skip = ''
         if query.mode in ['snapshot', 'script']:
             basenum = 0
             if query.skip: basenum = int(query.skip)
@@ -48,9 +48,9 @@ def prerender_document(query, docenvt):
             else: prev_skip = str(prev_skip)
             if next_skip >= docenvt.unfiltered_story_count: next_skip = ''
             else: next_skip = str(next_skip)
-        docenvt.skip_url = skip_url
-        docenvt.next_skip = next_skip
-        docenvt.prev_skip = prev_skip
+    docenvt.skip_url = skip_url
+    docenvt.next_skip = next_skip
+    docenvt.prev_skip = prev_skip
 
 def filterQueryStories(query, stories):
     if query.skip:
