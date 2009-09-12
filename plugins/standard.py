@@ -23,12 +23,12 @@ def prerender_document(query, docenvt):
         if query.mode == 'snapshot':
             if int(skip):
                 return os.path.join(*([docenvt.url] + query.category +
-                                      ['index-skip' + skip + '.' + query.flavour]))
+                                      ['index-skip' + str(skip) + '.' + query.flavour]))
             else:
                 return os.path.join(*([docenvt.url] + query.category + ['index.' + query.flavour]))
         elif query.mode == 'script':
             if skip and int(skip):
-                skip_extension = '?skip=' + skip
+                skip_extension = '?skip=' + str(skip)
             else:
                 skip_extension = ''
             return os.path.join(*([docenvt.url] + query.category +
