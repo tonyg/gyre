@@ -340,6 +340,8 @@ def cgi_main():
             category[-1] = category[-1][:pos]
             query.storyid = string.join(category, '/')
             category.pop()
+    else:
+        query.storyid = config.default_storyid
 
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
         setattr(query, k, yaml.safe_load(v[0]))
