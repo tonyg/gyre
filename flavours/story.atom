@@ -5,8 +5,8 @@
       <atom:name><?getattr(story,'from')?></atom:name>
     </atom:author>
     <atom:category term="<?story.display.category?>" />
-    <atom:id><?url?>/_STORY_/<?story.id?>.html</atom:id> <!-- cheating. Get a better ID -->
-    <atom:link href="<?url?>/_STORY_/<?story.id?>.html" />
+    <atom:id><?url?>/<?story.id?>.html</atom:id> <!-- cheating. Get a better ID -->
+    <atom:link href="<?url?>/<?story.id?>.html" />
 
     <atom:content type="html"><?cgi.escape(story.body)?></atom:content>
   </atom:entry>

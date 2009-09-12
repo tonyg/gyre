@@ -194,6 +194,7 @@ config.store = Store()
 config.sources = []
 config.snapshot_flavours = ['html', 'rss', 'atom']
 config.verbose_snapshot = 1
+config.legacy_story_links = 0
 if os.environ.has_key('SCRIPT_NAME'):
     config.base_url = os.path.dirname(os.environ['SCRIPT_NAME'])
 else:
@@ -261,7 +262,7 @@ def query_for(**kw):
 
 def snapshotRender(query):
     if query.storyid:
-        path = os.path.join(config.snapshot_dir, '_STORY_', query.storyid + '.' + query.flavour)
+        path = os.path.join(config.snapshot_dir, query.storyid + '.' + query.flavour)
     else:
         if query.skip:
             pfx = 'index-skip' + str(query.skip) + '.'
@@ -299,24 +300,27 @@ def snapshot_main():
     config.store.save()
 
 def cgi_main():
-    path = string.split(os.environ.get('PATH_INFO', ''), '/')
     category = []
-    flavour = config.default_flavour
-    for elt in path:
+    for elt in string.split(os.environ.get('PATH_INFO', ''), '/'):
         if not elt or elt.startswith('.') or elt.find('\0') != -1 or elt.find('\\') != -1:
             continue
         category.append(elt)
-    if category and category[0] == '_STORY_':
-        pos = category[-1].rfind('.')
-        if pos != -1:
-            flavour = category[-1][pos + 1:]
-            category[-1] = category[-1][:pos]
-        query = query_for(flavour = flavour, storyid = string.join(category[1:], '/'), mode = 'script')
+    if config.legacy_story_links and category and category[0] == '_STORY_': category.pop(0)
+
+    query = query_for(flavour = config.default_flavour, mode = 'script')
+    if not category:
+        query.category = []
     else:
-        if category and category[-1].startswith('index.'):
-            flavour = category[-1][6:]
-            category.pop()
-        query = query_for(flavour = flavour, category = category, mode = 'script')
+        pos = category[-1].rfind('.')
+        if pos == -1:
+            query.category = category
+        else:
+            query.flavour = category[-1][pos + 1:]
+            category[-1] = category[-1][:pos]
+            if category[-1] == 'index':
+                query.category = category[:-1]
+            else:
+                query.storyid = string.join(category, '/')
 
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items(): setattr(query, k, v[0])
     config.store.load()

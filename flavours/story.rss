@@ -1,5 +1,5 @@
     <item>
       <title><?cgi.escape(story.subject)?></title>
-      <link><?url?>/_STORY_/<?story.id?>.html</link>
+      <link><?url?>/<?story.id?>.html</link>
       <description><?cgi.escape(make_synopsis(story.body))?></description>
     </item>

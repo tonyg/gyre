@@ -18,7 +18,7 @@ def escape_md(str):
 class ExtendedMarkdown(markdown2.Markdown):
     wikiish_link = re.compile(r'\[\[([^]|]+)(\|([^]|]+))?\]\]')
     def __init__(self, link_base):
-        self.link_base = escape_md(link_base + '/_STORY_')
+        self.link_base = escape_md(link_base)
         markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
 
     def _do_link_patterns(self, text):
