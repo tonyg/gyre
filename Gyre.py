@@ -330,27 +330,32 @@ def cgi_main():
     if config.legacy_story_links and category and category[0] == '_STORY_': category.pop(0)
 
     query = query_for(flavour = config.default_flavour, mode = 'script',
-                      num_entries = config.num_entries)
-    if not category:
-        query.category = []
-    else:
+                      num_entries = config.num_entries, category = [])
+    if category:
         pos = category[-1].rfind('.')
         if pos == -1:
             query.category = category
         else:
             query.flavour = category[-1][pos + 1:]
             category[-1] = category[-1][:pos]
-            if category[-1] == 'index':
-                query.category = category[:-1]
-            else:
-                query.storyid = string.join(category, '/')
+            query.storyid = string.join(category, '/')
+            category.pop()
 
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
         setattr(query, k, yaml.safe_load(v[0]))
+
     config.store.load()
-    config.store.prepareForQuery(query)
-    for source in config.sources: source.updateForQuery(query)
-    docenvt = renderQuery(query, config.script_url)
+
+    def rq(query):
+        config.store.prepareForQuery(query)
+        for source in config.sources: source.updateForQuery(query)
+        return renderQuery(query, config.script_url)
+    try:
+        docenvt = rq(query)
+    except KeyError:
+        query.storyid = ''
+        query.category = category
+        docenvt = rq(query)
     sys.stdout.write(template(docenvt.flavour.headers, docenvt))
     sys.stdout.write('\r\n')
     sys.stdout.write(template(docenvt.flavour.document, docenvt).encode('utf-8'))
