@@ -1,4 +1,4 @@
 <?story.mtimefmt('%H:%M')?> | <?story.subject?>
 
-<?story.body_pre_markdown?>
+<?story.body?>
 

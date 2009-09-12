@@ -1,5 +1,4 @@
-# An extended markdown syntax. Activate this plugin for each story by
-# adding "markdown" to the list in the "Renderers" header.
+# An extended markdown syntax.
 
 import Gyre
 
@@ -38,13 +37,17 @@ class ExtendedMarkdown(markdown2.Markdown):
         return text
 
 def prerender_story(query, docentity, story, storyenvt):
-    if 'markdown' in story.renderers:
-        def md_span(text):
-            md = ExtendedMarkdown(docentity.url)
-            text = md._run_span_gamut(text)
-            text = md._unescape_special_chars(text)
-            return text
+    def md_span(text):
+        md = ExtendedMarkdown(docentity.url)
+        text = md._run_span_gamut(text)
+        text = md._unescape_special_chars(text)
+        return text
+    storyenvt.force_markdown = md_span
+    if 'markdown' in Gyre.renderchain_for(query, story):
         storyenvt.markdown = md_span
-        story.body_pre_markdown = story.body
-        story.body = ExtendedMarkdown(docentity.url).convert(story.body)
+    else:
+        storyenvt.markdown = lambda text: text
     return []
+
+def render_story(query, docentity, story, storyenvt):
+    return ExtendedMarkdown(docentity.url).convert(story.body)

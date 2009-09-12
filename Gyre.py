@@ -56,6 +56,7 @@ class Store:
         self.stories = {}
         self.category_root = ({}, [])
         self.pluginModules = []
+        self.pluginDict = {}
         self.flavours = {}
 
         self.missing_flavour = Entity()
@@ -77,11 +78,20 @@ class Store:
                 else:
                     order = 0
                 self.pluginModules.append((order, mod))
+                self.pluginDict[modname] = mod
         self.pluginModules.sort(lambda (a, aa), (b, bb): a - b)
 
     def getPlugins(self, name):
         result = []
         for (order, mod) in self.pluginModules:
+            if hasattr(mod, name):
+                result.append(getattr(mod, name))
+        return result
+
+    def getNamedPlugins(self, pluginnames, name):
+        result = []
+        for pluginname in pluginnames:
+            mod = self.pluginDict[pluginname]
             if hasattr(mod, name):
                 result.append(getattr(mod, name))
         return result
@@ -202,7 +212,8 @@ else:
 
 config.protostory = Entity()
 config.protostory.view = 'story'
-config.protostory.renderers = ['renderstory', 'markdown']
+config.protostory.renderers = ['markdown', 'renderstory']
+config.protostory.txt_renderers = ['renderstory']
 
 def add_source(source):
     config.sources.append(source)
@@ -226,6 +237,12 @@ def template(tmpl, env):
         tmpl = tmpl[m.end():]
     return string.join(acc, '')
 
+def renderchain_for(query, story):
+    rs = getattr(story, query.flavour + '_renderers')
+    if not rs:
+        rs = story.renderers
+    return rs
+
 def renderQuery(query, url):
     docenvt = Entity()
     docenvt.flavour = config.store.getFlavour(query.flavour)
@@ -245,6 +262,9 @@ def renderQuery(query, url):
         storyenvt.story = story
         for prerender_story in config.store.getPlugins('prerender_story'):
             content_entries.extend(prerender_story(query, docenvt, story, storyenvt))
+        renderchain = renderchain_for(query, story)
+        for render_story in config.store.getNamedPlugins(renderchain, 'render_story'):
+            story.body = render_story(query, docenvt, story, storyenvt)
         entry = template(getattr(docenvt.flavour, story.view), storyenvt)
         content_entries.append(entry)
     docenvt.contents = string.join(content_entries, '')
