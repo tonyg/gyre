@@ -312,7 +312,8 @@ def snapshot_main():
             if config.num_entries:
                 for skip in range(0, config.store.getStoryCount(), config.num_entries):
                     snapshotRender(query_for(flavour = flavour, category = category,
-                                             mode = 'snapshot', skip = skip))
+                                             mode = 'snapshot', skip = skip,
+                                             num_entries = config.num_entries))
             else:
                 snapshotRender(query_for(flavour = flavour, category = category,
                                          mode = 'snapshot'))
@@ -328,7 +329,8 @@ def cgi_main():
         category.append(elt)
     if config.legacy_story_links and category and category[0] == '_STORY_': category.pop(0)
 
-    query = query_for(flavour = config.default_flavour, mode = 'script')
+    query = query_for(flavour = config.default_flavour, mode = 'script',
+                      num_entries = config.num_entries)
     if not category:
         query.category = []
     else:

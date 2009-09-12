@@ -36,14 +36,14 @@ def prerender_document(query, docenvt):
         else:
             return ''
             
-    if Gyre.config.num_entries:
+    if query.num_entries:
         next_skip = ''
         prev_skip = ''
         if query.mode in ['snapshot', 'script']:
             basenum = 0
             if query.skip: basenum = int(query.skip)
-            prev_skip = basenum - Gyre.config.num_entries
-            next_skip = basenum + Gyre.config.num_entries
+            prev_skip = basenum - query.num_entries
+            next_skip = basenum + query.num_entries
             if prev_skip < 0: prev_skip = ''
             else: prev_skip = str(prev_skip)
             if next_skip >= docenvt.unfiltered_story_count: next_skip = ''
@@ -55,5 +55,5 @@ def prerender_document(query, docenvt):
 def filterQueryStories(query, stories):
     if query.skip:
         del stories[:int(query.skip)]
-    if Gyre.config.num_entries:
-        del stories[Gyre.config.num_entries:]
+    if query.num_entries:
+        del stories[query.num_entries:]
