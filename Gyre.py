@@ -346,7 +346,7 @@ def cgi_main():
                 query.storyid = string.join(category, '/')
 
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
-        setattr(query, k, yaml.load(v[0]))
+        setattr(query, k, yaml.safe_load(v[0]))
     config.store.load()
     config.store.prepareForQuery(query)
     for source in config.sources: source.updateForQuery(query)
