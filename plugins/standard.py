@@ -46,7 +46,7 @@ def prerender_document(query, docenvt):
             next_skip = basenum + Gyre.config.num_entries
             if prev_skip < 0: prev_skip = ''
             else: prev_skip = str(prev_skip)
-            if next_skip >= docenvt.story_count: next_skip = ''
+            if next_skip >= docenvt.unfiltered_story_count: next_skip = ''
             else: next_skip = str(next_skip)
         docenvt.skip_url = skip_url
         docenvt.next_skip = next_skip

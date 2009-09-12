@@ -16,8 +16,7 @@ def sitemap_main():
         source.updateForQuery(query)
 
     docenvt = Entity()
-    docenvt.flavourname = 'html'
-    docenvt.flavour = config.store.getFlavour(docenvt.flavourname)
+    docenvt.flavour = config.store.getFlavour('html')
     docenvt.query = query
     docenvt.config = config
     docenvt.url = config.script_url

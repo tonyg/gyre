@@ -3,7 +3,7 @@
 
 import Gyre
 
-plugin_order = 300
+plugin_order = 50
 
 import markdown2
 import os
@@ -17,14 +17,8 @@ def escape_md(str):
 
 class ExtendedMarkdown(markdown2.Markdown):
     wikiish_link = re.compile(r'\[\[([^]|]+)(\|([^]|]+))?\]\]')
-    def __init__(self, mode):
-        if mode == 'script':
-            self.link_base = Gyre.config.script_url
-        elif mode == 'snapshot':
-            self.link_base = Gyre.config.snapshot_url
-        else:
-            raise Exception("Unsupported gyre mode", mode)
-        self.link_base = escape_md(self.link_base + '/_STORY_')
+    def __init__(self, link_base):
+        self.link_base = escape_md(link_base + '/_STORY_')
         markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
 
     def _do_link_patterns(self, text):
@@ -45,6 +39,12 @@ class ExtendedMarkdown(markdown2.Markdown):
 
 def prerender_story(query, docentity, story, storyenvt):
     if 'markdown' in story.renderers:
+        def md_span(text):
+            md = ExtendedMarkdown(docentity.url)
+            text = md._run_span_gamut(text)
+            text = md._unescape_special_chars(text)
+            return text
+        storyenvt.markdown = md_span
         story.body_pre_markdown = story.body
-        story.body = ExtendedMarkdown(query.mode).convert(story.body)
+        story.body = ExtendedMarkdown(docentity.url).convert(story.body)
     return []

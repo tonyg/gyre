@@ -160,7 +160,7 @@ class Store:
             self.accumulate_tree(acc, idx)
             acc.extend(stories)
 
-    def query(self, query):
+    def queryIds(self, query):
         if query.storyid:
             return [query.storyid]
         acc = []
@@ -174,6 +174,15 @@ class Store:
         acc.extend(stories)
         self.accumulate_tree(acc, idx)
         return acc
+
+    def query(self, query):
+        ids = self.queryIds(query)
+        for filter in self.getPlugins('filterQueryIds'): filter(query, ids)
+        stories = [self.getStory(id) for id in ids]
+        stories.sort(key = lambda s: s.mtime, reverse = True)
+        unfiltered_story_count = len(stories)
+        for filter in self.getPlugins('filterQueryStories'): filter(query, stories)
+        return (unfiltered_story_count, stories)
 
 config = Entity()
 config.version = '0.0.1'
@@ -191,6 +200,7 @@ else:
     config.base_url = 'file://' + os.getcwd()
 
 config.protostory = Entity()
+config.protostory.view = 'story'
 config.protostory.renderers = ['renderstory', 'markdown']
 
 def add_source(source):
@@ -215,32 +225,18 @@ def template(tmpl, env):
         tmpl = tmpl[m.end():]
     return string.join(acc, '')
 
-def renderStories(query, url):
-    storyids = config.store.query(query)
-    for filter in config.store.getPlugins('filterQueryIds'): filter(query, storyids)
-
+def renderQuery(query, url):
     docenvt = Entity()
-    docenvt.flavourname = query.flavour
     docenvt.flavour = config.store.getFlavour(query.flavour)
     docenvt.query = query
-    docenvt.stories = map(config.store.getStory, storyids)
     docenvt.config = config
     docenvt.url = url
 
-    def cmp_story(sa, sb):
-        if (sa.float == 'yes') ^ (sb.float == 'yes'):
-            if sa.float == 'yes': return -1
-            return 1
-        else:
-            return sb.mtime - sa.mtime
-    docenvt.stories.sort(cmp_story)
-    docenvt.story_count = len(docenvt.stories)
-    if docenvt.stories:
-        docenvt.mtime = docenvt.stories[0].mtime
-    else:
-        docenvt.mtime = 0
+    (unfiltered_story_count, stories) = config.store.query(query)
+    docenvt.unfiltered_story_count = unfiltered_story_count
+    docenvt.stories = stories
+    docenvt.mtime = docenvt.stories[0].mtime if docenvt.stories else 0
     docenvt.mtime3339 = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(docenvt.mtime))
-    for filter in config.store.getPlugins('filterQueryStories'): filter(query, docenvt.stories)
 
     content_entries = []
     for story in docenvt.stories:
@@ -248,15 +244,14 @@ def renderStories(query, url):
         storyenvt.story = story
         for prerender_story in config.store.getPlugins('prerender_story'):
             content_entries.extend(prerender_story(query, docenvt, story, storyenvt))
-        entry = template(docenvt.flavour.story, storyenvt)
+        entry = template(getattr(docenvt.flavour, story.view), storyenvt)
         content_entries.append(entry)
     docenvt.contents = string.join(content_entries, '')
 
     for prerender_document in config.store.getPlugins('prerender_document'):
         prerender_document(query, docenvt)
 
-    return (template(docenvt.flavour.headers, docenvt),
-            template(docenvt.flavour.document, docenvt))
+    return docenvt
 
 def query_for(**kw):
     query = Entity()
@@ -277,9 +272,10 @@ def snapshotRender(query):
         os.makedirs(os.path.dirname(path), 0755)
     except:
         pass
-    (headers, document) = renderStories(query, config.snapshot_url)
     if config.verbose_snapshot:
         print 'Writing %s...' % path
+    docenvt = renderQuery(query, config.snapshot_url)
+    document = template(docenvt.flavour.document, docenvt)
     f = open(path, 'w', 0644)
     f.write(document.encode('utf-8'))
     f.close()
@@ -326,8 +322,8 @@ def cgi_main():
     config.store.load()
     config.store.prepareForQuery(query)
     for source in config.sources: source.updateForQuery(query)
-    (headers, document) = renderStories(query, config.script_url)
-    sys.stdout.write(headers)
+    docenvt = renderQuery(query, config.script_url)
+    sys.stdout.write(template(docenvt.flavour.headers, docenvt))
     sys.stdout.write('\r\n')
-    sys.stdout.write(document.encode('utf-8'))
+    sys.stdout.write(template(docenvt.flavour.document, docenvt).encode('utf-8'))
     config.store.save()
