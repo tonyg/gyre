@@ -1,5 +1,5 @@
 #
-# YamlFSSource.py - New-style YAML/Markdown file-system data source
+# YamlFSSource.py - New-style YAML file-system data source
 # Copyright (C) 2009 Tony Garnock-Jones <tonyg@kcbbs.gen.nz>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,42 +21,6 @@ import Gyre
 import os
 import string
 import yaml
-import markdown2
-import re
-
-def escape_md(str):
-    return (str
-            # To avoid markdown <em> and <strong>:
-            .replace('*', markdown2.g_escape_table['*'])
-            .replace('_', markdown2.g_escape_table['_']))
-
-class ExtendedMarkdown(markdown2.Markdown):
-    wikiish_link = re.compile(r'\[\[([^]|]+)(\|([^]|]+))?\]\]')
-    def __init__(self, mode):
-        if mode == 'script':
-            self.link_base = Gyre.config.script_url
-        elif mode == 'snapshot':
-            self.link_base = Gyre.config.snapshot_url
-        else:
-            raise Exception("Unsupported gyre mode", mode)
-        self.link_base = escape_md(self.link_base + '/_STORY_')
-        markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
-
-    def _do_link_patterns(self, text):
-        replacements = []
-        for match in self.wikiish_link.finditer(text):
-            replacements.append((match.span(), match.group(1), match.group(3)))
-        replacements.reverse()
-        for (start, end), href, label in replacements:
-            href = escape_md(href)
-            if label is None:
-                label = os.path.basename(href)
-            escaped_href = href.replace('"', '&quot;')  # b/c of attr quote
-            text = text[:start] + \
-                   ('<a href="%s.html">%s</a>' % \
-                    (os.path.join(self.link_base, escaped_href), label)) + \
-                   text[end:]
-        return text
 
 class YamlFSSource:
     def __init__(self, contentdir):
@@ -89,12 +53,11 @@ class YamlFSSource:
 
         story = Gyre.Entity()
         story.mtime = s.st_mtime
-        story.renderer = 'renderstory'
+        story.renderers = ['renderstory', 'markdown']
 
         (headers, body) = self._load_file(filepath)
         for (key, val) in self._template_headers(dirname).items(): setattr(story, key.lower(), val)
         for (key, val) in headers.items(): setattr(story, key.lower(), val)
-        body = ExtendedMarkdown(query.mode).convert(body)
 
         story.mtime = int(story.mtime)
         categorystr = dirname[len(self.contentdir) + 1:]
