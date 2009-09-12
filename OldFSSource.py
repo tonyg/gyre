@@ -33,7 +33,7 @@ class OldFSSource:
         except OSError:
             return
 
-        story = Gyre.Entity()
+        story = Gyre.Entity(Gyre.config.protostory)
         story.mtime = s.st_mtime
 
         f = open(filepath)
