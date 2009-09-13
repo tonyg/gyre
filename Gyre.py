@@ -29,19 +29,15 @@ import cgitb; cgitb.enable()
 
 import plugins
 
-def maybe_wrap_dict(x):
-    if isinstance(x, dict):
-        return Entity(defaultprops = x)
-    else:
-        return x
-
 class Entity:
     def __init__(self, parent=None, defaultprops=None):
         self.__dict__['_parent'] = parent
         self.__dict__['_props'] = defaultprops or {}
     def __getattr__(self, name):
         if name.startswith('_'): raise AttributeError, name
-        if self._props.has_key(name): return maybe_wrap_dict(self._props[name])
+        if self._props.has_key(name):
+            v = self._props[name]
+            return Entity(defaultprops = v) if isinstance(v, dict) else v
         if self._parent is None: return ''
         return self._parent.__getattr__(name)
     def __setattr__(self, key, val):
