@@ -30,7 +30,7 @@ class TlaSource:
         self.category = category
         pass
 
-    def updateForQuery(self, query):
+    def updateStore(self):
         patchnames = map(string.strip, os.popen(self.tlapath + ' logs').readlines())
         stories = []
         for patch in patchnames:

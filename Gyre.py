@@ -113,7 +113,7 @@ class Store:
     def load(self):
         self._load_plugins()
         self._load_flavours()
-        pass
+        for source in config.sources: source.updateStore()
 
     def save(self):
         pass
@@ -139,18 +139,6 @@ class Store:
 
     def getStoryCount(self):
         return len(self.stories)
-
-    def prepareForQuery(self, query):
-        if query.storyid:
-            return
-        else:
-            (idx, stories) = self.category_root
-            for cat in query.category:
-                if not idx.has_key(cat):
-                    return
-                (idx, stories) = idx[cat]
-            idx.clear()
-            del stories[0:]
 
     def update(self, story):
         for processor in self.getPlugins('preprocess'): story = processor(story)
@@ -310,8 +298,6 @@ def snapshotRender(query):
 def snapshot_main():
     top_query = query_for(category = [], mode = 'snapshot')
     config.store.load()
-    config.store.prepareForQuery(top_query)
-    for source in config.sources: source.updateForQuery(top_query)
     for flavour in config.snapshot_flavours:
         for category in config.store.getCategories():
             if config.num_entries:
@@ -353,16 +339,12 @@ def cgi_main():
 
     config.store.load()
 
-    def rq(query):
-        config.store.prepareForQuery(query)
-        for source in config.sources: source.updateForQuery(query)
-        return renderQuery(query, config.script_url)
     try:
-        docenvt = rq(query)
+        docenvt = renderQuery(query, config.script_url)
     except KeyError:
         query.storyid = ''
         query.category = category
-        docenvt = rq(query)
+        docenvt = renderQuery(query, config.script_url)
     sys.stdout.write(template(docenvt.flavour.headers, docenvt))
     sys.stdout.write('\r\n')
     sys.stdout.write(template(docenvt.flavour.document, docenvt).encode('utf-8'))

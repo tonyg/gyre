@@ -57,7 +57,7 @@ class YamlFSSource:
             self.template_headers_cache[dirname] = Gyre.Entity(parent = parent, defaultprops = p)
         return self.template_headers_cache[dirname]
 
-    def _visit_story(self, query, dirname, name):
+    def _visit_story(self, dirname, name):
         filepath = os.path.join(dirname, name + '.' + Gyre.config.file_extension)
         try:
             s = os.stat(filepath)
@@ -85,12 +85,10 @@ class YamlFSSource:
 
         Gyre.config.store.update(story)
 
-    def _visit(self, query, dirname, names):
-        for name in names:
-            if name.endswith('.' + Gyre.config.file_extension):
-                choplen = len(Gyre.config.file_extension) + 1
-                self._visit_story(query, dirname, name[:-choplen])
-
-    def updateForQuery(self, query):
-        category = os.path.join(self.contentdir, *query.category)
-        os.path.walk(category, self._visit, query)
+    def updateStore(self):
+        def visit(arg, dirname, names):
+            for name in names:
+                if name.endswith('.' + Gyre.config.file_extension):
+                    choplen = len(Gyre.config.file_extension) + 1
+                    self._visit_story(dirname, name[:-choplen])
+        os.path.walk(self.contentdir, visit, None)
