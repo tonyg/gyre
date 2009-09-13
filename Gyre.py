@@ -244,6 +244,7 @@ def renderchain_for(query, story):
         rs = story.renderers
     return rs
 
+storystack = {} # used to break (certain) infinite recursions
 def renderQuery(query, url):
     docenvt = Entity()
     docenvt.flavour = config.store.getFlavour(query.flavour)
@@ -259,6 +260,9 @@ def renderQuery(query, url):
 
     content_entries = []
     for story in docenvt.stories:
+        if story.id in storystack:
+            continue
+        storystack[story.id] = 1
         storyenvt = Entity(docenvt)
         storyenvt.story = story
         for prerender_story in config.store.getPlugins('prerender_story'):
@@ -268,6 +272,7 @@ def renderQuery(query, url):
             story.body = render_story(query, docenvt, story, storyenvt)
         entry = template(getattr(docenvt.flavour, story.view), storyenvt)
         content_entries.append(entry)
+        del storystack[story.id]
     docenvt.contents = string.join(content_entries, '')
 
     for prerender_document in config.store.getPlugins('prerender_document'):
