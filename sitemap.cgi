@@ -8,12 +8,9 @@ import Config
 
 def sitemap_main():
     store = config.store
-    query = query_for(category = [], mode = 'sitemap')
+    query = query_for(category = [], mode = 'sitemap', flavour = 'html')
 
     store.load()
-    store.prepareForQuery(query)
-    for source in config.sources:
-        source.updateForQuery(query)
 
     docenvt = Entity()
     docenvt.flavour = config.store.getFlavour('html')
@@ -29,8 +26,8 @@ def sitemap_main():
             return string.join(result, '')
 
         def render_stories():
-            stories = map(store.getStory, storyids)
-            stories.sort(lambda sa, sb: sb.mtime - sa.mtime)
+            stories = [store.getStory(id) for id in storyids]
+            stories.sort(key = lambda s: s.mtime, reverse = True)
             result = []
             for story in stories:
                 storyenvt = Entity(docenvt)
@@ -47,7 +44,7 @@ def sitemap_main():
         e.render_stories = render_stories
         return template(docenvt.flavour.sitemap_index, e)
 
-    docenvt.contents = expand_idx([], *store.category_root)
+    docenvt.contents = expand_idx([], *config.categoryIndex.root)
 
     for prerender_document in config.store.getPlugins('prerender_document'):
         prerender_document(query, docenvt)
