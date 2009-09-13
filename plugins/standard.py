@@ -20,18 +20,20 @@ def prerender_story(query, docentity, story, storyenvt):
 
 def prerender_document(query, docenvt):
     def skip_url(skip):
+        skip = skip or '0'
+        category = query.category or []
         if query.mode == 'snapshot':
             if int(skip):
-                return os.path.join(*([docenvt.url] + query.category +
+                return os.path.join(*([docenvt.url] + category +
                                       ['index-skip' + str(skip) + '.' + query.flavour]))
             else:
-                return os.path.join(*([docenvt.url] + query.category + ['index.' + query.flavour]))
+                return os.path.join(*([docenvt.url] + category + ['index.' + query.flavour]))
         elif query.mode == 'script':
             if skip and int(skip):
                 skip_extension = '?skip=' + str(skip)
             else:
                 skip_extension = ''
-            return os.path.join(*([docenvt.url] + query.category +
+            return os.path.join(*([docenvt.url] + category +
                                   ['index.' + query.flavour + skip_extension]))
         else:
             return ''
