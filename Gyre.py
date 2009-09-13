@@ -55,10 +55,10 @@ class Entity:
 class Store:
     def __init__(self):
         self.stories = {}
-        self.category_root = ({}, [])
         self.pluginModules = []
         self.pluginDict = {}
         self.flavours = {}
+        self.indices = []
 
         self.missing_flavour = Entity()
         self.missing_flavour.story = ''
@@ -118,21 +118,14 @@ class Store:
     def save(self):
         pass
 
+    def addIndex(self, index):
+        self.indices.append(index)
+
     def getFlavour(self, flavour):
         if self.flavours.has_key(flavour):
             return self.flavours[flavour]
         else:
             return self.missing_flavour
-
-    def getCategories(self):
-        acc = [[]]
-        def collect(prefix, idx):
-            for (cat, (newidx, storyids)) in idx.items():
-                newprefix = prefix + [cat]
-                acc.append(newprefix)
-                collect(newprefix, newidx)
-        collect([], self.category_root[0])
-        return acc
 
     def getStoryIds(self):
         return self.stories.keys()
@@ -143,45 +136,52 @@ class Store:
     def update(self, story):
         for processor in self.getPlugins('preprocess'): story = processor(story)
         self.stories[story.id] = story
-        (idx, stories) = self.category_root
+        for index in self.indices: index.update(story)
+
+    def getStory(self, id):
+        if self.stories.has_key(id): return self.stories[id]
+        raise KeyError, ('No such story', id)
+
+class CategoryIndex:
+    def __init__(self):
+        self.root = ({}, [])
+        config.store.addIndex(self)
+
+    def update(self, story):
+        (idx, stories) = self.root
         for cat in story.category:
             if not idx.has_key(cat):
                 idx[cat] = ({}, [])
             (idx, stories) = idx[cat]
         stories.append(story.id)
 
-    def getStory(self, id):
-        if self.stories.has_key(id): return self.stories[id]
-        raise KeyError, ('No such story', id)
+    def allCategories(self):
+        acc = [[]]
+        def collect(prefix, idx):
+            for (cat, (newidx, storyids)) in idx.items():
+                newprefix = prefix + [cat]
+                acc.append(newprefix)
+                collect(newprefix, newidx)
+        collect([], self.root[0])
+        return acc
 
-    def accumulate_tree(self, acc, outer_idx):
-        for (idx, stories) in outer_idx.values():
-            self.accumulate_tree(acc, idx)
-            acc.extend(stories)
-
-    def queryIds(self, query):
-        if query.storyid:
-            return [query.storyid]
+    def storiesInCategory(self, category):
         acc = []
-        (idx, stories) = self.category_root
-        for cat in query.category:
+        (idx, stories) = self.root
+        for cat in category:
             if idx.has_key(cat):
                 (idx, stories) = idx[cat]
             else:
                 (idx, stories) = ({}, [])
                 break
         acc.extend(stories)
-        self.accumulate_tree(acc, idx)
-        return acc
 
-    def query(self, query):
-        ids = self.queryIds(query)
-        for filter in self.getPlugins('filterQueryIds'): filter(query, ids)
-        stories = [self.getStory(id) for id in ids]
-        stories.sort(key = lambda s: s.mtime, reverse = True)
-        unfiltered_story_count = len(stories)
-        for filter in self.getPlugins('filterQueryStories'): filter(query, stories)
-        return (unfiltered_story_count, stories)
+        def accumulate_tree(acc, outer_idx):
+            for (idx, stories) in outer_idx.values():
+                accumulate_tree(acc, idx)
+                acc.extend(stories)
+        accumulate_tree(acc, idx)
+        return acc
 
 config = Entity()
 config.version = '0.0.1'
@@ -190,6 +190,7 @@ config.flavourdirs = ['flavours']
 config.file_extension = 'txt'
 config.default_flavour = 'html'
 config.store = Store()
+config.categoryIndex = CategoryIndex()
 config.sources = []
 config.snapshot_flavours = ['html', 'rss', 'atom']
 config.verbose_snapshot = 1
@@ -240,7 +241,19 @@ def renderQuery(query, url):
     docenvt.config = config
     docenvt.url = url
 
-    (unfiltered_story_count, stories) = config.store.query(query)
+    if query.storyid:
+        unfiltered_story_count = 1
+        stories = [config.store.getStory(query.storyid)]
+    else:
+        stories = [config.store.getStory(id) for id in
+                   config.categoryIndex.storiesInCategory(query.category)]
+        stories.sort(key = lambda s: s.mtime, reverse = True)
+        unfiltered_story_count = len(stories)
+        if query.skip:
+            del stories[:int(query.skip)]
+        if query.num_entries:
+            del stories[query.num_entries:]
+
     docenvt.unfiltered_story_count = unfiltered_story_count
     docenvt.stories = stories
     docenvt.mtime = docenvt.stories[0].mtime if docenvt.stories else 0
@@ -299,7 +312,7 @@ def snapshot_main():
     top_query = query_for(category = [], mode = 'snapshot')
     config.store.load()
     for flavour in config.snapshot_flavours:
-        for category in config.store.getCategories():
+        for category in config.categoryIndex.allCategories():
             if config.num_entries:
                 for skip in range(0, config.store.getStoryCount(), config.num_entries):
                     snapshotRender(query_for(flavour = flavour, category = category,

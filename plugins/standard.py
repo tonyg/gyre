@@ -51,9 +51,3 @@ def prerender_document(query, docenvt):
     docenvt.skip_url = skip_url
     docenvt.next_skip = next_skip
     docenvt.prev_skip = prev_skip
-
-def filterQueryStories(query, stories):
-    if query.skip:
-        del stories[:int(query.skip)]
-    if query.num_entries:
-        del stories[query.num_entries:]
