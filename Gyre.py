@@ -179,6 +179,25 @@ class CategoryIndex:
         accumulate_tree(acc, idx)
         return acc
 
+exprre = re.compile('<\?((\?[^>]|[^?])+)\?>')
+def template(tmpl, env):
+    if isinstance(env, Entity): env = env.DICT()
+    acc = []
+    while 1:
+        m = exprre.search(tmpl)
+        if not m:
+            acc.append(tmpl)
+            break
+        acc.append(tmpl[:m.start()])
+        try:
+            acc.append(unicode(eval(m.group(1), sys.modules, env)))
+        except:
+            acc.append(cgi.escape('<Exception:\r\n' +
+                                  string.join(traceback.format_exception(*sys.exc_info()), '') +
+                                  '\r\n>'))
+        tmpl = tmpl[m.end():]
+    return string.join(acc, '')
+
 config = Entity()
 config.version = '0.0.1'
 config.language = 'en'
@@ -205,25 +224,6 @@ config.protostory.txt_renderers = ['renderstory']
 
 def add_source(source):
     config.sources.append(source)
-
-exprre = re.compile('<\?((\?[^>]|[^?])+)\?>')
-def template(tmpl, env):
-    if isinstance(env, Entity): env = env.DICT()
-    acc = []
-    while 1:
-        m = exprre.search(tmpl)
-        if not m:
-            acc.append(tmpl)
-            break
-        acc.append(tmpl[:m.start()])
-        try:
-            acc.append(unicode(eval(m.group(1), sys.modules, env)))
-        except:
-            acc.append(cgi.escape('<Exception:\r\n' +
-                                  string.join(traceback.format_exception(*sys.exc_info()), '') +
-                                  '\r\n>'))
-        tmpl = tmpl[m.end():]
-    return string.join(acc, '')
 
 def renderchain_for(query, story):
     rs = getattr(story, query.flavour + '_renderers')
