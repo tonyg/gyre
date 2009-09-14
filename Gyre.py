@@ -331,21 +331,19 @@ def cgi_main():
     if config.legacy_story_links and category and category[0] == '_STORY_': category.pop(0)
 
     query = query_for(flavour = config.default_flavour, mode = 'script',
-                      num_entries = config.num_entries, category = [])
+                      num_entries = config.num_entries, category = category)
+    for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
+        setattr(query, k, yaml.safe_load(v[0]))
+
     if category:
         pos = category[-1].rfind('.')
-        if pos == -1:
-            query.category = category
-        else:
+        if pos != -1:
             query.flavour = category[-1][pos + 1:]
             category[-1] = category[-1][:pos]
             query.storyid = string.join(category, '/')
             category.pop()
     else:
         query.storyid = config.default_storyid
-
-    for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
-        setattr(query, k, yaml.safe_load(v[0]))
 
     try:
         docenvt = renderQuery(query, config.script_url)
