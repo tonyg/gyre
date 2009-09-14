@@ -305,7 +305,6 @@ def snapshotRender(query):
     f.close()
 
 def snapshot_main():
-    top_query = query_for(category = [], mode = 'snapshot')
     config.store.load()
     for flavour in config.snapshot_flavours:
         for category in config.categoryIndex.allCategories():
@@ -322,6 +321,8 @@ def snapshot_main():
     config.store.save()
 
 def cgi_main():
+    config.store.load()
+
     category = []
     for elt in string.split(os.environ.get('PATH_INFO', ''), '/'):
         if not elt or elt.startswith('.') or elt.find('\0') != -1 or elt.find('\\') != -1:
@@ -345,8 +346,6 @@ def cgi_main():
 
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
         setattr(query, k, yaml.safe_load(v[0]))
-
-    config.store.load()
 
     try:
         docenvt = renderQuery(query, config.script_url)
