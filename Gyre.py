@@ -184,7 +184,6 @@ config.version = '0.0.1'
 config.language = 'en'
 config.flavourdirs = ['flavours']
 config.file_extension = 'txt'
-config.default_flavour = 'html'
 config.store = Store()
 config.categoryIndex = CategoryIndex()
 config.sources = []
@@ -195,6 +194,9 @@ if os.environ.has_key('SCRIPT_NAME'):
     config.base_url = os.path.dirname(os.environ['SCRIPT_NAME'])
 else:
     config.base_url = 'file://' + os.getcwd()
+
+config.protoquery = Entity()
+config.protoquery.flavour = 'html'
 
 config.protostory = Entity()
 config.protostory.view = 'story'
@@ -278,7 +280,7 @@ def renderQuery(query, url):
     return docenvt
 
 def query_for(**kw):
-    query = Entity()
+    query = Entity(config.protoquery)
     query.dialect = 'gyre-plain'
     for (k, v) in kw.items(): setattr(query, k, v)
     return query
@@ -308,11 +310,10 @@ def snapshot_main():
     config.store.load()
     for flavour in config.snapshot_flavours:
         for category in config.categoryIndex.allCategories():
-            if config.num_entries:
-                for skip in range(0, config.store.getStoryCount(), config.num_entries):
+            if config.protoquery.num_entries:
+                for skip in range(0, config.store.getStoryCount(), config.protoquery.num_entries):
                     snapshotRender(query_for(flavour = flavour, category = category,
-                                             mode = 'snapshot', skip = skip,
-                                             num_entries = config.num_entries))
+                                             mode = 'snapshot', skip = skip))
             else:
                 snapshotRender(query_for(flavour = flavour, category = category,
                                          mode = 'snapshot'))
@@ -330,8 +331,7 @@ def cgi_main():
         category.append(elt)
     if config.legacy_story_links and category and category[0] == '_STORY_': category.pop(0)
 
-    query = query_for(flavour = config.default_flavour, mode = 'script',
-                      num_entries = config.num_entries, category = category)
+    query = query_for(mode = 'script', category = category)
     for (k, v) in cgi.parse_qs(os.environ.get('QUERY_STRING', '')).items():
         setattr(query, k, yaml.safe_load(v[0]))
 

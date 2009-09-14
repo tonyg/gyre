@@ -8,7 +8,8 @@ config.script_url = config.base_url + '/gyre.cgi'
 
 config.snapshot_dir = 'snapshot'
 config.snapshot_url = config.base_url + '/' + config.snapshot_dir
-config.num_entries = 10
+
+config.protoquery.num_entries = 10
 
 import YamlFSSource
 add_source(YamlFSSource.YamlFSSource('content'))
