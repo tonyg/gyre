@@ -118,10 +118,7 @@ class Store:
         self.indices.append(index)
 
     def getFlavour(self, flavour):
-        if self.flavours.has_key(flavour):
-            return self.flavours[flavour]
-        else:
-            return self.missing_flavour
+        return self.flavours.get(flavour, self.missing_flavour)
 
     def getStoryIds(self):
         return self.stories.keys()
