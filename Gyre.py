@@ -349,7 +349,6 @@ def cgi_main():
         docenvt = renderQuery(query, config.script_url)
     except KeyError:
         query.storyid = ''
-        query.category = category
         docenvt = renderQuery(query, config.script_url)
     sys.stdout.write(template(docenvt.flavour.headers, docenvt))
     sys.stdout.write('\r\n')
