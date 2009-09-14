@@ -1,6 +1,6 @@
 #
 # TlaSource.py - A source of stories backed by a GNU Arch changelog
-# Copyright (C) 2004 Tony Garnock-Jones <tonyg@kcbbs.gen.nz>
+# Copyright (C) 2004 - 2009 Tony Garnock-Jones <tonyg@kcbbs.gen.nz>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
