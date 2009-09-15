@@ -228,10 +228,10 @@ if os.environ.has_key('SCRIPT_NAME'):
 else:
     config.base_url = 'file://' + os.getcwd()
 
-config.defaultstory = Entity(view = 'categoryindex')
-
 config.protostory = Entity()
 config.protostory.view = 'story'
+
+config.defaultstory = Entity(config.protostory, view = 'categoryindex')
 
 config.protocontext = Entity()
 config.protocontext.flavour = 'html'
