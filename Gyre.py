@@ -94,11 +94,12 @@ class Store:
         self.preprocessors.append(processor)
 
     def getTemplate(self, view, variant, flavour):
-        filename = '%s_%s.%s' % (view, variant, flavour)
-        if self.templates.has_key(filename): return self.templates[filename]
+        for possibility in view:
+            filename = '%s_%s.%s' % (possibility, variant, flavour)
+            if self.templates.has_key(filename): return self.templates[filename]
         generic = 'generic_%s.%s' % (variant, flavour)
         if self.templates.has_key(generic): return self.templates[generic]
-        raise KeyError, ('No such template', filename)
+        raise KeyError, ('No such template', (view, variant, flavour))
 
     def getStoryIds(self):
         return self.stories.keys()
@@ -229,9 +230,9 @@ else:
     config.base_url = 'file://' + os.getcwd()
 
 config.protostory = Entity()
-config.protostory.view = 'story'
+config.protostory.view = ['story']
 
-config.defaultstory = Entity(config.protostory, view = 'categoryindex')
+config.defaultstory = Entity(config.protostory, view = ['categoryindex'])
 
 config.protocontext = Entity()
 config.protocontext.flavour = 'html'
@@ -325,6 +326,6 @@ def sitemap_main():
     config.renderenvt.url = config.script_url
     config.store.load()
     context = Entity(config.protocontext, mode = 'sitemap', category = [])
-    story = Entity(view = 'sitemap')
+    story = Entity(view = ['sitemap'])
     cgi_render(story, context)
     config.store.save()
