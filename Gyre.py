@@ -96,6 +96,8 @@ class Store:
     def getTemplate(self, view, variant, flavour):
         filename = '%s_%s.%s' % (view, variant, flavour)
         if self.templates.has_key(filename): return self.templates[filename]
+        generic = 'generic_%s.%s' % (variant, flavour)
+        if self.templates.has_key(generic): return self.templates[generic]
         raise KeyError, ('No such template', filename)
 
     def getStoryIds(self):
