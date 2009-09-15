@@ -158,6 +158,22 @@ class CategoryIndex:
         accumulate_tree(acc, idx)
         return acc
 
+class TagIndex:
+    def __init__(self, propertyname = 'tags'):
+        self.tags = {}
+        self.propertyname = propertyname
+        config.store.addIndex(self)
+
+    def update(self, story):
+        tags = getattr(story, self.propertyname)
+        if tags:
+            for tag in tags:
+                if not self.tags.has_key(tag): self.tags[tag] = set()
+                self.tags[tag].add(story.id)
+
+    def lookup(self, tag):
+        return self.tags.get(tag, set())
+
 exprre = re.compile('<\?((\?[^>]|[^?])+)\?>')
 def template_s(tmpl, env):
     if isinstance(env, Entity): env = env.DICT()
