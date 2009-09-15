@@ -176,6 +176,7 @@ class TagIndex:
 
 exprre = re.compile('<\?((\?[^>]|[^?])+)\?>')
 def template_s(tmpl, env):
+    tmpl = str(tmpl)
     if isinstance(env, Entity): env = env.DICT()
     acc = []
     while 1:
