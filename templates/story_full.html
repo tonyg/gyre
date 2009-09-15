@@ -1,6 +1,6 @@
 <?dateline(story, context)?>
 <h4 class="story_title"><?story.subject?></h4>
-<?markdown(template(story.body, locals()))?>
+<?markdown(template_s(story.body, locals()))?>
 <p>
   posted at: <?timefmt('%H:%M', story.mtime)?> |
   category: <a href="<?url?>/<?string.join(story.category, '/')?>/index.html">

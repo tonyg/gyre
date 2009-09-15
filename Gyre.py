@@ -155,7 +155,7 @@ class CategoryIndex:
         return acc
 
 exprre = re.compile('<\?((\?[^>]|[^?])+)\?>')
-def template(tmpl, env):
+def template_s(tmpl, env):
     if isinstance(env, Entity): env = env.DICT()
     acc = []
     while 1:
@@ -173,6 +173,9 @@ def template(tmpl, env):
         tmpl = tmpl[m.end():]
     return string.join(acc, '')
 
+def template(view, variant, flavour, env):
+    return template_s(config.store.getTemplate(view, variant, flavour), env)
+
 storystack = {} # used to break (certain) infinite recursions
 def renderStory(flavour, variant, story, context, avoidLoops = True):
     if avoidLoops:
@@ -181,7 +184,7 @@ def renderStory(flavour, variant, story, context, avoidLoops = True):
             return ''
         storystack[storystack_key] = 1
     try:
-        return template(config.store.getTemplate(story.view, variant, flavour),
+        return template(story.view, variant, flavour,
                         Entity(config.renderenvt,
                                variant = variant,
                                story = story,
@@ -234,6 +237,7 @@ config.renderenvt = Entity()
 config.renderenvt.config = config
 config.renderenvt.Entity = Entity
 config.renderenvt.template = template
+config.renderenvt.template_s = template_s
 config.renderenvt.renderStory = renderStory
 config.renderenvt.renderStories = renderStories
 config.renderenvt.timefmt = lambda fmt, t: time.strftime(fmt, time.localtime(t))

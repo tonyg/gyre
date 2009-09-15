@@ -8,5 +8,5 @@
     <atom:id><?url?>/<?story.id?>.html</atom:id> <!-- cheating. Get a better ID -->
     <atom:link href="<?url?>/<?story.id?>.html" />
 
-    <atom:content type="html"><?cgi.escape(markdown(template(story.body, locals())))?></atom:content>
+    <atom:content type="html"><?cgi.escape(markdown(template_s(story.body, locals())))?></atom:content>
   </atom:entry>

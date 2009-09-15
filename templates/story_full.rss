@@ -1,5 +1,5 @@
     <item>
       <title><?cgi.escape(story.subject)?></title>
       <link><?url?>/<?story.id?>.html</link>
-      <description><?cgi.escape(markdown(template(story.body, locals())))?></description>
+      <description><?cgi.escape(markdown(template_s(story.body, locals())))?></description>
     </item>
