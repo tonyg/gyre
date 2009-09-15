@@ -38,8 +38,8 @@ class OldFSSource:
 
         f = open(filepath)
         headers = rfc822.Message(f)
-        for (key, val) in headers.items(): setattr(story, key.lower(), val)
-        body = f.read()
+        for (key, val) in headers.items(): setattr(story, key.lower(), val.decode('utf-8'))
+        body = f.read().decode('utf-8')
         f.close()
 
         story.mtime = int(story.mtime)
