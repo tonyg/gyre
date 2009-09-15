@@ -242,9 +242,9 @@ config.renderenvt.time3339 = lambda t: time.strftime('%Y-%m-%dT%H:%M:%SZ', time.
 config.renderenvt.set_variable = set_variable
 
 def cgi_render(story, context):
-    sys.stdout.write(renderStory(context.flavour, 'page_headers', story, context).encode('ascii'))
+    sys.stdout.write(renderStory(context.flavour, 'response_headers', story, context).encode('ascii'))
     sys.stdout.write('\r\n')
-    sys.stdout.write(renderStory(context.flavour, 'page_body', story, context).encode('utf-8'))
+    sys.stdout.write(renderStory(context.flavour, 'response_body', story, context).encode('utf-8'))
 
 def cgi_main():
     config.renderenvt.url = config.script_url
@@ -286,7 +286,7 @@ def snapshotRender(path, flavour, story, context):
         pass
     if config.verbose_snapshot:
         print 'Writing %s...' % path
-    document = renderStory(flavour, 'page_body', story, context)
+    document = renderStory(flavour, 'response_body', story, context)
     if document:
         f = open(path, 'w', 0644)
         f.write(document.encode('utf-8'))
