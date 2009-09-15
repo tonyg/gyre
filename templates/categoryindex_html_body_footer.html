@@ -1,0 +1,6 @@
+   <div class="footer">
+     <?('<a href="'+skip_url(url,context,context.prev_skip)+'">[previous page]</a>') \
+	    if context.skip else ''?>
+     <?('<a href="'+skip_url(url,context,context.next_skip)+'">[next page]</a>') \
+	    if context.next_skip else ''?>
+   </div>

@@ -9,7 +9,7 @@ body {
 	background-color: white;
 }
 
-div.page {
+#page {
 	margin-left: 8em;
 	width: 512px;
 /*	background-color: #ddffdd; */
