@@ -31,7 +31,7 @@ class YamlFSSource:
         f = open(filepath)
         loader = yaml.Loader(f)
         headers = loader.get_data()
-        body = loader.prefix(1000000000).strip('\0').strip() # yuck
+        body = loader.prefix(1000000000).strip('\r\n\0') # yuck
         f.close()
         return (headers, body)
 
