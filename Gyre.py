@@ -224,6 +224,9 @@ else:
 
 config.defaultstory = Entity(view = 'categoryindex')
 
+config.protostory = Entity()
+config.protostory.view = 'story'
+
 config.protocontext = Entity()
 config.protocontext.flavour = 'html'
 
