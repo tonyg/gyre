@@ -27,6 +27,16 @@ import yaml
 import cgi
 import cgitb; cgitb.enable()
 
+class Absent:
+    def __init__(self, name):
+        self.name = name
+    def __nonzero__(self):
+        return False
+    def __str__(self):
+        return ''
+    def __repr__(self):
+        return 'Absent(%s)' % (self.name,)
+
 class Entity:
     def __init__(self, _parent=None, _props=None, **kw):
         self.__dict__['_parent'] = _parent
@@ -37,8 +47,8 @@ class Entity:
         if self._props.has_key(name):
             v = self._props[name]
             return Entity(_props = v) if isinstance(v, dict) else v
-        if self._parent is None: return ''
-        return self._parent.__getattr__(name)
+        if self._parent is None: return Absent(name)
+        return getattr(self._parent, name)
     def __setattr__(self, key, val):
         self._props[key] = val
     def DICT(self):
