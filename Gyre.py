@@ -140,7 +140,7 @@ class CategoryIndex:
         collect([], self.root[0])
         return acc
 
-    def storiesInCategory(self, category):
+    def lookup(self, category):
         acc = set()
         (idx, stories) = self.root
         for cat in category:
