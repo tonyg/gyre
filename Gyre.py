@@ -111,9 +111,10 @@ class Store:
         self.stories[story.id] = story
         for index in self.indices: index.update(story)
 
-    def getStory(self, id):
+    def getStory(self, id, fallback = None):
         if self.stories.has_key(id): return self.stories[id]
-        raise KeyError, ('No such story', id)
+        if fallback is None: raise KeyError, ('No such story', id)
+        return fallback
 
 class CategoryIndex:
     def __init__(self):
