@@ -54,7 +54,7 @@ class YamlFSSource:
                 p = self._load_file(filepath)[0]
             except IOError:
                 p = {}
-            self.template_headers_cache[dirname] = Gyre.Entity(parent = parent, defaultprops = p)
+            self.template_headers_cache[dirname] = Gyre.Entity(_parent = parent, _props = p)
         return self.template_headers_cache[dirname]
 
     def _visit_story(self, dirname, name):

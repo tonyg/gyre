@@ -9,7 +9,7 @@
     <description></description>
     <language><?config.language?></language>
 
-    <?contents?>
+    <?pagedRender('rss', 'full', config.categoryIndex.storiesInCategory(context.category), context)?>
 
   </channel>
 </rss>

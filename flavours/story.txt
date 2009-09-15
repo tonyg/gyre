@@ -1,4 +1,0 @@
-<?story.mtimefmt('%H:%M')?> | <?story.subject?>
-
-<?story.body?>
-

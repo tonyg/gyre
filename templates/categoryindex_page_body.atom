@@ -1,0 +1,16 @@
+<?'<?xml version="1.0"?'+'>'?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom">
+<?set_variable(context, 'storyids', config.categoryIndex.storiesInCategory(context.category))?>
+<?set_variable(context, 'contents', pagedRender('atom', 'full', context.storyids, context))?>
+  <atom:title type="text"><?config.blog_title?></atom:title>
+  <atom:updated><?time3339(max([config.store.getStory(i).mtime for i in context.storyids]))?></atom:updated>
+  <atom:generator version="<?config.version?>">gyre/<?config.version?></atom:generator>
+  <atom:id><?url?></atom:id> <!-- cheating. Get a better ID -->
+  <atom:link rel="self" href="<?skip_url(url,context,context.skip)?>" />
+  <atom:link rel="first" href="<?skip_url(url,context,0)?>" />
+  <?('<atom:link rel="previous" href="'+skip_url(url,context,context.prev_skip)+'" />') \
+  		 if context.skip else ''?>
+  <?('<atom:link rel="next" href="'+skip_url(url,context,context.next_skip)+'" />') \
+  		 if context.next_skip else ''?>
+  <?context.contents?>
+</atom:feed>

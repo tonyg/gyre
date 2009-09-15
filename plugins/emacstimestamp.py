@@ -2,8 +2,6 @@ import Gyre
 import re
 import time
 
-plugin_order = 50
-
 timestampre = re.compile('[<"](\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) \S+[">]')
 
 def preprocess(story):
@@ -13,3 +11,6 @@ def preprocess(story):
         x.extend([-1, 0, -1])
         story.mtime = int(time.mktime(x))
     return story
+
+def install(config):
+    config.store.addPreprocessor(preprocess)

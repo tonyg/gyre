@@ -1,9 +1,6 @@
 # An extended markdown syntax.
 
 import Gyre
-
-plugin_order = 50
-
 import markdown2
 import os
 import re
@@ -36,18 +33,15 @@ class ExtendedMarkdown(markdown2.Markdown):
                    text[end:]
         return text
 
-def prerender_story(query, docentity, story, storyenvt):
-    def md_span(text):
-        md = ExtendedMarkdown(docentity.url)
-        text = md._run_span_gamut(text)
-        text = md._unescape_special_chars(text)
-        return text
-    storyenvt.force_markdown = md_span
-    if 'markdown' in Gyre.renderchain_for(query, story):
-        storyenvt.markdown = md_span
-    else:
-        storyenvt.markdown = lambda text: text
-    return []
+def md_span(text):
+    md = ExtendedMarkdown(Gyre.config.renderenvt.url)
+    text = md._run_span_gamut(text)
+    text = md._unescape_special_chars(text)
+    return text
 
-def render_story(query, docentity, story, storyenvt):
-    return ExtendedMarkdown(docentity.url).convert(story.body)
+def markdown(text):
+    return ExtendedMarkdown(Gyre.config.renderenvt.url).convert(text)
+
+def install(config):
+    config.renderenvt.md_span = md_span
+    config.renderenvt.markdown = markdown

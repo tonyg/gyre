@@ -1,0 +1,3 @@
+<?string.center(config.blog_title, 75)?>
+
+<?renderStory('txt', 'dated', story, context)?>

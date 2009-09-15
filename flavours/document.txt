@@ -1,3 +1,0 @@
-<?string.center(config.blog_title, 75)?>
-
-<?contents?>

@@ -1,0 +1,11 @@
+<a class="sitemap_categorylink" href="<?url?>/<?string.join(context.category,'/')?>/index.html"><?(['top'] + context.category)[-1]?></a>
+<ul>
+<?renderStories('html', 'sitemap_link', context.node[1], Entity())?>
+</ul>
+
+<div class="sitemap_subcategory">
+<?''.join([renderStory('html', 'index', story,
+		Entity(category = context.category + [newcat], node = newnode),
+		avoidLoops = False)
+	   for newcat, newnode in context.node[0].items()])?>
+</div>

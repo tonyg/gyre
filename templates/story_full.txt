@@ -1,0 +1,3 @@
+<?timefmt('%H:%M', story.mtime)?> | <?story.subject?>
+
+<?template(story.body, Entity(locals(), md_span = lambda t: t))?>
