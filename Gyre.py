@@ -308,10 +308,10 @@ def snapshotRender(path, flavour, story, context):
         os.makedirs(os.path.dirname(path), 0755)
     except:
         pass
-    if config.verbose_snapshot:
-        print 'Writing %s...' % path
     document = renderStory(flavour, 'response_body', story, context)
     if document:
+        if config.verbose_snapshot:
+            print 'Writing %s...' % path
         f = open(path, 'w', 0644)
         f.write(document.encode('utf-8'))
         f.close()
