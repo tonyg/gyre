@@ -1,13 +1,14 @@
 <html>
-<head><?template(story.view, 'html_headers', 'html', locals())?></head>
+<head>
+<?template(story.view, 'html_headers', 'html', locals())?></head>
 
 <body>
  <div id="page">
-   <?template(story.view, 'html_body_site_header', 'html', locals())?>
-   <?template(story.view, 'html_body_header', 'html', locals())?>
-   <?template(story.view, 'html_body_content', 'html', locals())?>
-   <?template(story.view, 'html_body_footer', 'html', locals())?>
- </div>
+<?template(story.view, 'html_body_site_header', 'html', locals())
+?><?template(story.view, 'html_body_header', 'html', locals())
+?><?template(story.view, 'html_body_content', 'html', locals())
+?><?template(story.view, 'html_body_footer', 'html', locals())
+?> </div>
 </body>
 
 </html>
