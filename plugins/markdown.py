@@ -13,7 +13,8 @@ def escape_md(str):
 
 class ExtendedMarkdown(markdown2.Markdown):
     wikiish_link = re.compile(r'\[\[([^]|]+)(\|([^]|]+))?\]\]')
-    mdash_re = re.compile(r'(\b|\s)--(\b|\s)')
+    mdash_re = re.compile(r'(\b|\s)---(\b|\s)')
+    ndash_re = re.compile(r'(\b|\s)--(\b|\s)')
     def __init__(self, link_base):
         self.link_base = escape_md(link_base)
         markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
@@ -32,7 +33,7 @@ class ExtendedMarkdown(markdown2.Markdown):
                    ('<a href="%s.html">%s</a>' % \
                     (os.path.join(self.link_base, escaped_href), label)) + \
                    text[end:]
-        return self.mdash_re.sub(' &mdash; ', text)
+        return self.ndash_re.sub('&ndash;', self.mdash_re.sub('&mdash;', text))
 
 def md_span(text):
     md = ExtendedMarkdown(Gyre.config.renderenvt.url)
