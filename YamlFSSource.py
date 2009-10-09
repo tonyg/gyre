@@ -29,9 +29,16 @@ class YamlFSSource:
 
     def _load_file(self, filepath):
         f = open(filepath)
-        loader = yaml.Loader(f)
-        headers = loader.get_data()
-        body = loader.prefix(1000000000).strip('\r\n\0') # yuck
+        try:
+            loader = yaml.Loader(f)
+            headers = loader.get_data()
+            body = loader.prefix(1000000000).strip('\r\n\0') # yuck
+        except:
+            f.seek(0)
+            subject = os.path.split(filepath)[1]
+            subject = os.path.splitext(subject)[0]
+            headers = {'Subject': subject}
+            body = f.read().strip('\r\n\0')
         f.close()
         return (headers, body)
 
