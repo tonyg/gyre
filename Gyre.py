@@ -140,7 +140,7 @@ class CategoryIndex:
         collect([], self.root[0])
         return acc
 
-    def lookup(self, category):
+    def lookup(self, category, includeSubcategories = True):
         acc = set()
         (idx, stories) = self.root
         for cat in category:
@@ -155,7 +155,7 @@ class CategoryIndex:
             for (idx, stories) in outer_idx.values():
                 accumulate_tree(acc, idx)
                 acc.update(stories)
-        accumulate_tree(acc, idx)
+        if includeSubcategories: accumulate_tree(acc, idx)
         return acc
 
 class TagIndex:
