@@ -333,10 +333,11 @@ def snapshot_main():
                                                                               category = category,
                                                                               skip = skip))
             else:
-                snapshotRender(flavour, config.defaultstory, context)
+                snapshotRender(flavour, config.defaultstory, Entity(context, category = category))
         for storyid in config.store.getStoryIds():
             path = os.path.join(config.snapshot_dir, storyid + '.' + flavour)
-            snapshotRender(path, flavour, config.store.getStory(storyid), context)
+            story = config.store.getStory(storyid)
+            snapshotRender(path, flavour, story, Entity(context, category = story.category))
     config.store.save()
 
 def sitemap_main():
