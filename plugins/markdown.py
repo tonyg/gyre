@@ -19,6 +19,17 @@ class ExtendedMarkdown(markdown2.Markdown):
         self.link_base = escape_md(link_base)
         markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
 
+    _anchor_cleanup_re = re.compile(r'\W+')
+    def _atx_h_sub(self, match):
+        n = len(match.group(1))
+        demote_headers = self.extras.get("demote-headers")
+        if demote_headers:
+            n = min(n + demote_headers, 6)
+        inner = self._run_span_gamut(match.group(2))
+        anchor = self._anchor_cleanup_re.sub('-', inner).strip('-').lower()
+        return "<h%d><a name=\"%s\"></a>%s</h%d>\n\n" \
+               % (n, anchor, inner, n)
+
     def _do_link_patterns(self, text):
         replacements = []
         for match in self.wikiish_link.finditer(text):
