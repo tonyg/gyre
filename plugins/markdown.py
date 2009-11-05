@@ -17,7 +17,9 @@ class ExtendedMarkdown(markdown2.Markdown):
     ndash_re = re.compile(r'(\b|\s)--(\b|\s)')
     def __init__(self, link_base):
         self.link_base = escape_md(link_base)
-        markdown2.Markdown.__init__(self, extras = ["footnotes", "link-patterns"])
+        markdown2.Markdown.__init__(self,
+                                    html4tags = True,
+                                    extras = ["footnotes", "link-patterns"])
 
     _anchor_cleanup_re = re.compile(r'\W+')
     def _atx_h_sub(self, match):
