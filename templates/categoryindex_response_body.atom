@@ -8,9 +8,9 @@
   <atom:id><?url?></atom:id> <!-- cheating. Get a better ID -->
   <atom:link rel="self" href="<?skip_url(url,context,context.skip)?>" />
   <atom:link rel="first" href="<?skip_url(url,context,0)?>" />
-  <?('<atom:link rel="previous" href="'+skip_url(url,context,context.prev_skip)+'" />') \
+  <?('<atom:link rel="previous" href="'+cgi.escape(skip_url(url,context,context.prev_skip))+'" />') \
   		 if context.skip else ''?>
-  <?('<atom:link rel="next" href="'+skip_url(url,context,context.next_skip)+'" />') \
+  <?('<atom:link rel="next" href="'+cgi.escape(skip_url(url,context,context.next_skip))+'" />') \
   		 if context.next_skip else ''?>
   <?context.contents?>
 </atom:feed>
