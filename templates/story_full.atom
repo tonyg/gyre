@@ -6,7 +6,7 @@
     </author>
     <category term="<?string.join(story.category,'/')?>" />
     <id><?url?>/<?story.id?>.html</id> <!-- cheating. Get a better ID -->
-    <link href="<?url?>/<?story.id?>.html" />
+    <link href="<?config.script_url?>/<?story.id?>.html" />
 
     <content type="html"><?cgi.escape(markdown(template_s(story.body, locals())))?></content>
   </entry>
