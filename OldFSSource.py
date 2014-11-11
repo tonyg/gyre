@@ -54,6 +54,7 @@ class OldFSSource:
         uid.append(name)
         story.id = string.join(uid, '/')
 
+        story.source = self
         Gyre.config.store.update(story)
 
     def updateStore(self):
